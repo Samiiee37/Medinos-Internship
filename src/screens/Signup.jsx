@@ -22,8 +22,6 @@ export default function Signup({navigation}) {
           placeholderTextColor="#999"
           autoCapitalize="words"
           style={styles.input}
-          value={fullName}
-          onChangeText={setFullName}
         />
 
         <TextInput
@@ -32,8 +30,6 @@ export default function Signup({navigation}) {
           keyboardType="email-address"
           autoCapitalize="none"
           style={styles.input}
-          value={email}
-          onChangeText={setEmail}
         />
 
         <TextInput
@@ -41,11 +37,7 @@ export default function Signup({navigation}) {
           placeholderTextColor="#999"
           secureTextEntry
           style={styles.input}
-          value={password}
-          onChangeText={setPassword}
         />
-
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Submit</Text>
