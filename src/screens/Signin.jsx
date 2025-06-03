@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   View,
@@ -6,42 +6,78 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
 } from 'react-native';
 
-export default function Signin({navigation}) {
+export default function Signin({ navigation }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const handleSubmit = () => {
+    if (!email || !password) {
+      setError('Email and password are required.');
+    } else if (!email.includes('@')) {
+      setError('Please enter a valid email.');
+    } else {
+      setError('');
+      console.log('Signin successful with:', { email, password });
+      navigation.navigate('Home');
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.innerContainer}>
-        <Text style={styles.title}>Sign In</Text>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={styles.container}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.innerContainer}>
+            <Text style={styles.title}>Welcome Back</Text>
 
-        <TextInput
-          placeholder="Email"
-          placeholderTextColor="#999"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          style={styles.input}
-        />
+            <TextInput
+              placeholder="Email"
+              placeholderTextColor="#888"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              style={styles.input}
+              value={email}
+              onChangeText={setEmail}
+            />
 
-        <TextInput
-          placeholder="Password"
-          placeholderTextColor="#999"
-          secureTextEntry
-          style={styles.input}
-        />
+            <TextInput
+              placeholder="Password"
+              placeholderTextColor="#888"
+              secureTextEntry
+              style={styles.input}
+              value={password}
+              onChangeText={setPassword}
+            />
 
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Submit</Text>
-        </TouchableOpacity>
+            {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-        <TouchableOpacity
-          style={styles.signupLink}
-          onPress={() => navigation.navigate('Signup')}>
-          <Text style={styles.signupText}>New here? </Text>
-          <Text style={[styles.signupText, styles.signupAction]}>
-            Create your account{' '}
-          </Text>
-        </TouchableOpacity>
-      </View>
+            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+              <Text style={styles.buttonText}>Sign In</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.signupLink}
+              onPress={() => navigation.navigate('Signup')}
+            >
+              <Text style={styles.signupText}>New here?</Text>
+              <Text style={[styles.signupText, styles.signupAction]}>
+                {' '}Create your account
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -49,59 +85,75 @@ export default function Signin({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#dadada',
+    backgroundColor: '#f1f4f8',
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 24,
   },
   innerContainer: {
-    flex: 1,
-    justifyContent: 'center',
+    width: '100%',
     alignItems: 'center',
-    paddingHorizontal: 20,
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#1a1a1a',
-    marginBottom: 30,
+    fontSize: 30,
+    fontWeight: '700',
+    color: '#1c1c1e',
+    marginBottom: 35,
   },
   input: {
     width: '100%',
     height: 50,
     backgroundColor: '#fff',
-    borderColor: '#ddd',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 15,
+    borderRadius: 10,
+    paddingHorizontal: 16,
     fontSize: 16,
-    marginBottom: 15,
+    marginBottom: 18,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
     shadowColor: '#000',
     shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    elevation: 3,
+    color: '#1a1a1a',
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 12,
+    alignSelf: 'flex-start',
+    fontSize: 14,
   },
   button: {
-    backgroundColor: '#3478f6',
-    paddingVertical: 14,
-    borderRadius: 8,
+    backgroundColor: '#3b82f6',
+    paddingVertical: 15,
+    borderRadius: 10,
     width: '100%',
     alignItems: 'center',
+    shadowColor: '#3b82f6',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 4,
     marginTop: 10,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '600',
   },
   signupLink: {
     flexDirection: 'row',
-    alignItems: 'center',
+    justifyContent: 'center',
     marginTop: 25,
   },
   signupText: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#555',
   },
   signupAction: {
-    color: '#3478f6',
+    color: '#3b82f6',
     fontWeight: '600',
   },
 });
