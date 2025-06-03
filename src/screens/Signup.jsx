@@ -9,9 +9,6 @@ import {
 } from 'react-native';
 
 export default function Signup({navigation}) {
-  
-  
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>

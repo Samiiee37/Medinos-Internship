@@ -1,9 +1,14 @@
 import React from 'react';
-import { Text, View, TextInput, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import {
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+} from 'react-native';
 
-
-
-export default function Signin({ navigation }) {
+export default function Signin({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
@@ -28,10 +33,13 @@ export default function Signin({ navigation }) {
           <Text style={styles.buttonText}>Submit</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.signupLink} onPress={() => navigation.navigate('Signup')}>
+        <TouchableOpacity
+          style={styles.signupLink}
+          onPress={() => navigation.navigate('Signup')}>
           <Text style={styles.signupText}>New here? </Text>
-          <Text style={[styles.signupText, styles.signupAction]}>Create your account </Text>
-          
+          <Text style={[styles.signupText, styles.signupAction]}>
+            Create your account{' '}
+          </Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
