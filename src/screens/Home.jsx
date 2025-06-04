@@ -1,29 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
+import axios from 'axios';
 
-export default function Home({ navigation }) {
+export default function Home({navigation}) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('https://dummyjson.com/c/bb8d-b76d-4113-aec3') // Replace with your actual API endpoint
-      .then(res => res.json())
-      .then(data => {
-        setUsers(data); // if it's `data.users`, adjust accordingly
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get(
+          'https://dummyjson.com/c/bb8d-b76d-4113-aec3',
+        );
+        setUsers(response.data); // Adjust if response.data has a nested structure
+      } catch (error) {
+        console.error('Axios error:', error);
+      } finally {
         setLoading(false);
-      })
-      .catch(error => {
-        console.error(error);
-        setLoading(false);
-      });
+      }
+    };
+
+    fetchUsers();
   }, []);
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({item}) => (
     <TouchableOpacity
       style={styles.card}
-      onPress={() => navigation.navigate('Detail', { user: item })}
-    >
-      <Image source={{ uri: item.ImageUrl }} style={styles.image} />
+      onPress={() => navigation.navigate('Detail', {user: item})}>
+      <Image source={{uri: item.ImageUrl}} style={styles.image} />
       <Text style={styles.name}>{item.Name}</Text>
     </TouchableOpacity>
   );
