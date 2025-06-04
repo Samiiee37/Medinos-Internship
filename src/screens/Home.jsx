@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import axios from 'axios';
+import CustomHeader from '../components/CustomHeader'; // adjust the path if needed
 
 export default function Home({navigation}) {
   const [users, setUsers] = useState([]);
@@ -20,7 +21,7 @@ export default function Home({navigation}) {
         const response = await axios.get(
           'https://dummyjson.com/c/bb8d-b76d-4113-aec3',
         );
-        setUsers(response.data); // Adjust if response.data has a nested structure
+        setUsers(response.data); // adjust if nested
       } catch (error) {
         console.error('Axios error:', error);
       } finally {
@@ -49,13 +50,16 @@ export default function Home({navigation}) {
   }
 
   return (
-    <FlatList
-      data={users}
-      keyExtractor={(item, index) => index.toString()}
-      numColumns={2}
-      renderItem={renderItem}
-      contentContainerStyle={styles.list}
-    />
+    <View style={{flex: 1}}>
+      <CustomHeader username="Samar" />
+      <FlatList
+        data={users}
+        keyExtractor={(item, index) => index.toString()}
+        numColumns={2}
+        renderItem={renderItem}
+        contentContainerStyle={styles.list}
+      />
+    </View>
   );
 }
 

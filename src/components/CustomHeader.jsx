@@ -9,9 +9,8 @@ export default function CustomHeader({ username }) {
   return (
     <View style={styles.container}>
       <Text style={styles.welcomeText}>Welcome, {username}</Text>
-
       <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-        <Icon name="person-circle-outline" size={32} color="#333" />
+        <Icon name="person-circle-outline" size={32} color="#333" /> 
       </TouchableOpacity>
     </View>
   );

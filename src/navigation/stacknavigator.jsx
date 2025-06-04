@@ -1,12 +1,12 @@
 //Navigation
 import {createStackNavigator} from '@react-navigation/stack';
-import CustomHeader from '../components/CustomHeader';
 
 //Screens
 import Signin from '../screens/Signin';
 import Signup from '../screens/Signup';
 import Home from '../screens/Home';
 import Detail from '../screens/Detail';
+import Profile from '../screens/Profile';
 
 const Stack = createStackNavigator();
 export default function StackNavigator() {
@@ -25,14 +25,19 @@ export default function StackNavigator() {
       <Stack.Screen
         name="Home"
         component={Home}
-        options={{
-          header: () => <CustomHeader username="Samar" />
-        }}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name="Detail"
         component={Detail}
         options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          title: 'Profile',
+        }}
       />
     </Stack.Navigator>
   );

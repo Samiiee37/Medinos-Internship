@@ -15,6 +15,7 @@
     "axios": "^1.9.0",
     "react": "19.0.0",
     "react-native": "0.79.2",
+    "react-native-fontawesome": "^7.0.0",
     "react-native-gesture-handler": "^2.25.0",
     "react-native-safe-area-context": "^5.4.1",
     "react-native-screens": "^4.11.1",
