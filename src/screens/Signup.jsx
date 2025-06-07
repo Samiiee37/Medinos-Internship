@@ -32,6 +32,7 @@ export default function Signup({navigation}) {
           fullName,
           email,
           password,
+          signedIn: false,
         };
         await AsyncStorage.setItem('user', JSON.stringify(userData));
         console.log('User data saved to storage:', userData);

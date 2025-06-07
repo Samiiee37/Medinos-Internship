@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,19 +9,22 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import axios from 'axios';
-import CustomHeader from '../components/CustomHeader'; // adjust the path if needed
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomHeader from '../components/CustomHeader'; 
 
-export default function Home({navigation}) {
+export default function Home({ navigation }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [username, setUsername] = useState('Please Sign In');
+  const [screen, setScreen] = useState('Signin');
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get(
-          'https://dummyjson.com/c/bb8d-b76d-4113-aec3',
+          'https://dummyjson.com/c/bb8d-b76d-4113-aec3'
         );
-        setUsers(response.data); // adjust if nested
+        setUsers(response.data); 
       } catch (error) {
         console.error('Axios error:', error);
       } finally {
@@ -29,14 +32,31 @@ export default function Home({navigation}) {
       }
     };
 
+    const fetchUserInfo = async () => {
+      try {
+        const userData = await AsyncStorage.getItem('user');
+        if (userData) {
+          const user = JSON.parse(userData);
+          if (user.signedIn === true && user.fullName) {
+            setUsername(user.fullName);
+            setScreen('Profile');
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    };
+
     fetchUsers();
+    fetchUserInfo();
   }, []);
 
-  const renderItem = ({item}) => (
+  const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.card}
-      onPress={() => navigation.navigate('Detail', {user: item})}>
-      <Image source={{uri: item.ImageUrl}} style={styles.image} />
+      onPress={() => navigation.navigate('Detail', { user: item })}
+    >
+      <Image source={{ uri: item.ImageUrl }} style={styles.image} />
       <Text style={styles.name}>{item.Name}</Text>
     </TouchableOpacity>
   );
@@ -50,8 +70,8 @@ export default function Home({navigation}) {
   }
 
   return (
-    <View style={{flex: 1}}>
-      <CustomHeader username="Samar" />
+    <View style={{ flex: 1 }}>
+      <CustomHeader username={username} screen={screen}/>
       <FlatList
         data={users}
         keyExtractor={(item, index) => index.toString()}

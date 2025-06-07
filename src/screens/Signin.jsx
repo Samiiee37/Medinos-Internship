@@ -16,6 +16,7 @@ export default function Signin({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [displayName, setDisplayName] = useState('');
 
   const handleSubmit = async () => {
     if (!email || !password) {
@@ -29,6 +30,11 @@ export default function Signin({navigation}) {
         if (storedUser) {
           const parsedUser = JSON.parse(storedUser);
           if (parsedUser.email === email && parsedUser.password === password) {
+            const updatedUser = {
+              ...parsedUser,
+              signedIn: true,
+            };
+            await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
             console.log('Signin successful with:', {email});
             navigation.navigate('Home');
           } else {
@@ -79,7 +85,6 @@ export default function Signin({navigation}) {
             <TouchableOpacity style={styles.button} onPress={handleSubmit}>
               <Text style={styles.buttonText}>Sign In</Text>
             </TouchableOpacity>
-
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

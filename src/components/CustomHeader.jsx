@@ -1,16 +1,24 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 
-export default function CustomHeader({ username }) {
+export default function CustomHeader({ username, screen }) {
   const navigation = useNavigation();
+
+  const initial =
+    username && username !== 'Please Sign In'
+      ? username.charAt(0).toUpperCase()
+      : '?';
 
   return (
     <View style={styles.container}>
       <Text style={styles.welcomeText}>Welcome, {username}</Text>
-      <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-        <Icon name="person-circle-outline" size={32} color="#333" /> 
+
+      <TouchableOpacity
+        style={styles.initialCircle}
+        onPress={() => navigation.navigate(screen)}
+      >
+        <Text style={styles.initialText}>{initial}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -32,5 +40,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: '#333',
+  },
+  initialCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#3b82f6',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  initialText: {
+    fontSize: 18,
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
