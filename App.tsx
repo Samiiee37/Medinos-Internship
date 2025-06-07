@@ -1,13 +1,15 @@
 import './gesture-handler';
 
-import React from 'react';
+import React = require('react');
 import { View, Text, StyleSheet } from 'react-native';
 
 // Safe area context and navigation 
+//import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 
 //components
+//import StackNavigator from './src/navigation/stacknavigator';
 import StackNavigator from './src/navigation/stacknavigator';
 
 
