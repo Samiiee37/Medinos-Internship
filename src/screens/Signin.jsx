@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   View,
@@ -10,21 +10,37 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Signin({ navigation }) {
+export default function Signin({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!email || !password) {
       setError('Email and password are required.');
     } else if (!email.includes('@')) {
       setError('Please enter a valid email.');
     } else {
       setError('');
-      console.log('Signin successful with:', { email, password });
-      navigation.navigate('Home');
+      try {
+        const storedUser = await AsyncStorage.getItem('user');
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          if (parsedUser.email === email && parsedUser.password === password) {
+            console.log('Signin successful with:', {email});
+            navigation.navigate('Home');
+          } else {
+            setError('Invalid email or password.');
+          }
+        } else {
+          setError('No account found. Please sign up.');
+        }
+      } catch (error) {
+        console.error('Signin error:', error);
+        setError('Something went wrong. Please try again.');
+      }
     }
   };
 
@@ -32,12 +48,10 @@ export default function Signin({ navigation }) {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.container}
-      >
+        style={styles.container}>
         <ScrollView
           contentContainerStyle={styles.scrollContainer}
-          keyboardShouldPersistTaps="handled"
-        >
+          keyboardShouldPersistTaps="handled">
           <View style={styles.innerContainer}>
             <Text style={styles.title}>Welcome Back</Text>
 
@@ -66,15 +80,6 @@ export default function Signin({ navigation }) {
               <Text style={styles.buttonText}>Sign In</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.signupLink}
-              onPress={() => navigation.navigate('Signup')}
-            >
-              <Text style={styles.signupText}>New here?</Text>
-              <Text style={[styles.signupText, styles.signupAction]}>
-                {' '}Create your account
-              </Text>
-            </TouchableOpacity>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -114,7 +119,7 @@ const styles = StyleSheet.create({
     borderColor: '#e0e0e0',
     shadowColor: '#000',
     shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowRadius: 6,
     elevation: 3,
     color: '#1a1a1a',
@@ -133,7 +138,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     shadowColor: '#3b82f6',
     shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: {width: 0, height: 4},
     shadowRadius: 8,
     elevation: 4,
     marginTop: 10,

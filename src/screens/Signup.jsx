@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   View,
@@ -10,14 +10,15 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Signup({ navigation }) {
+export default function Signup({navigation}) {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (!fullName || !email || !password) {
       setError('All fields are required.');
     } else if (!email.includes('@')) {
@@ -26,8 +27,19 @@ export default function Signup({ navigation }) {
       setError('Password must be at least 6 characters.');
     } else {
       setError('');
-      console.log('Signup data:', { fullName, email, password });
-      navigation.navigate('Home');
+      try {
+        const userData = {
+          fullName,
+          email,
+          password,
+        };
+        await AsyncStorage.setItem('user', JSON.stringify(userData));
+        console.log('User data saved to storage:', userData);
+        navigation.navigate('Home');
+      } catch (err) {
+        console.error('Storage error:', err);
+        setError('Failed to save user data.');
+      }
     }
   };
 
@@ -35,12 +47,10 @@ export default function Signup({ navigation }) {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.container}
-      >
+        style={styles.container}>
         <ScrollView
           contentContainerStyle={styles.scrollContainer}
-          keyboardShouldPersistTaps="handled"
-        >
+          keyboardShouldPersistTaps="handled">
           <View style={styles.innerContainer}>
             <Text style={styles.title}>Create Account</Text>
 
@@ -78,13 +88,6 @@ export default function Signup({ navigation }) {
               <Text style={styles.buttonText}>Create Account</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.signinLink}
-              onPress={() => navigation.navigate('Signin')}
-            >
-              <Text style={styles.signinText}>Already have an account?</Text>
-              <Text style={[styles.signinText, styles.signinAction]}> Sign In</Text>
-            </TouchableOpacity>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -124,7 +127,7 @@ const styles = StyleSheet.create({
     borderColor: '#e0e0e0',
     shadowColor: '#000',
     shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowRadius: 6,
     elevation: 3,
     color: '#1a1a1a',
@@ -143,7 +146,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     shadowColor: '#3b82f6',
     shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: {width: 0, height: 4},
     shadowRadius: 8,
     elevation: 4,
     marginTop: 10,
