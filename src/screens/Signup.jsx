@@ -100,30 +100,30 @@ export default function Signup() {
 
   //google signup
   const handleGoogleSignIn = async () => {
-    try {
-      await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
-      const signInResult = await GoogleSignin.signIn();
+  try {
+    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
 
-      const idToken = signInResult.data?.idToken || signInResult.idToken;
-      if (!idToken) throw new Error('No ID token found');
+    // Sign out first to clear cached Google account selection
+    await GoogleSignin.signOut();
 
-      const googleCredential = GoogleAuthProvider.credential(idToken);
-      const authResult = await signInWithCredential(
-        getAuth(),
-        googleCredential,
-      );
+    // Now sign in, this will force account picker
+    const signInResult = await GoogleSignin.signIn();
 
-      console.log(authResult.user.providerData);
+    const idToken = signInResult.data?.idToken || signInResult.idToken;
+    if (!idToken) throw new Error('No ID token found');
 
-      navigation.navigate('Home');
-    } catch (error) {
-      console.error('Google Sign-In error:', error);
-      Alert.alert(
-        'Sign-In Error',
-        'Failed to sign in with Google. Please try again.',
-      );
-    }
-  };
+    const googleCredential = GoogleAuthProvider.credential(idToken);
+    const authResult = await signInWithCredential(getAuth(), googleCredential);
+
+    console.log(authResult.user.providerData);
+
+    navigation.navigate('Home');
+  } catch (error) {
+    console.error('Google Sign-In error:', error);
+    Alert.alert('Sign-In Error', 'Failed to sign in with Google. Please try again.');
+  }
+};
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -171,7 +171,7 @@ export default function Signup() {
             <Text style={styles.buttonText}>Sign Up</Text>
           </TouchableOpacity>
 
-          <Button title="Google Sign-In" onPress={handleGoogleSignIn} />
+          <Button title="Google Sign-Up" onPress={handleGoogleSignIn} />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

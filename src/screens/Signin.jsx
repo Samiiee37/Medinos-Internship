@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -10,16 +10,30 @@ import {
   Platform,
   ScrollView,
   Alert,
+  Button,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import SigninHeader from '../components/SigninHeader';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {
+  GoogleAuthProvider,
+  getAuth,
+  signInWithCredential,
+} from '@react-native-firebase/auth';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
   const navigation = useNavigation();
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        '902255017381-dom9cksut36riboj7e667qguj71kc28g.apps.googleusercontent.com',
+    });
+  }, []);
 
   const validate = () => {
     const newErrors = {};
@@ -43,7 +57,7 @@ export default function SignIn() {
       const parsedUser = JSON.parse(storedUser);
 
       if (parsedUser.email === email && parsedUser.password === password) {
-        const updatedUser = { ...parsedUser, signedIn: true };
+        const updatedUser = {...parsedUser, signedIn: true};
         await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
         navigation.navigate('Home');
       } else {
@@ -55,12 +69,37 @@ export default function SignIn() {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+  
+      // Sign out first to clear cached Google account selection
+      await GoogleSignin.signOut();
+  
+      // Now sign in, this will force account picker
+      const signInResult = await GoogleSignin.signIn();
+  
+      const idToken = signInResult.data?.idToken || signInResult.idToken;
+      if (!idToken) throw new Error('No ID token found');
+  
+      const googleCredential = GoogleAuthProvider.credential(idToken);
+      const authResult = await signInWithCredential(getAuth(), googleCredential);
+  
+      console.log(authResult.user.providerData);
+  
+      navigation.navigate('Home');
+    } catch (error) {
+      console.error('Google Sign-In error:', error);
+      Alert.alert('Sign-In Error', 'Failed to sign in with Google. Please try again.');
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <SigninHeader />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}>
+        style={{flex: 1}}>
         <ScrollView
           contentContainerStyle={styles.innerContainer}
           keyboardShouldPersistTaps="handled">
@@ -70,9 +109,9 @@ export default function SignIn() {
             style={styles.input}
             placeholder="Email Address"
             value={email}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setEmail(text);
-              setErrors((prev) => ({ ...prev, email: '' }));
+              setErrors(prev => ({...prev, email: ''}));
             }}
             keyboardType="email-address"
             autoCapitalize="none"
@@ -84,18 +123,21 @@ export default function SignIn() {
             style={styles.input}
             placeholder="Password"
             value={password}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setPassword(text);
-              setErrors((prev) => ({ ...prev, password: '' }));
+              setErrors(prev => ({...prev, password: ''}));
             }}
             secureTextEntry
             placeholderTextColor="#999"
           />
-          {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+          {errors.password && (
+            <Text style={styles.errorText}>{errors.password}</Text>
+          )}
 
           <TouchableOpacity style={styles.button} onPress={handleSignIn}>
             <Text style={styles.buttonText}>Sign In</Text>
           </TouchableOpacity>
+          <Button title="Google Sign-In" onPress={handleGoogleSignIn} />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -139,7 +181,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
     shadowColor: '#0a84ff',
     shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: {width: 0, height: 4},
     shadowRadius: 6,
     elevation: 5,
   },
