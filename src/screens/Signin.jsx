@@ -20,6 +20,7 @@ import {
   signInWithCredential,
 } from '@react-native-firebase/auth';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import SigninHeader from '../components/SigninHeader';
 
 // web client ID
 const WEB_CLIENT_ID =
@@ -31,6 +32,7 @@ export default function SignIn() {
     password: '',
   });
   const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -119,9 +121,14 @@ export default function SignIn() {
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardAvoidingView}>
+
+        {/* Fixed header outside ScrollView */}
+        <SigninHeader />
+
         <ScrollView
           contentContainerStyle={styles.scrollContainer}
-          keyboardShouldPersistTaps="handled">
+          keyboardShouldPersistTaps="handled"
+          style={{flex: 1}}>
           <Text style={styles.title}>Sign In</Text>
 
           <TextInput
@@ -135,14 +142,24 @@ export default function SignIn() {
           />
           {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            value={formData.password}
-            onChangeText={text => handleInputChange('password', text)}
-            secureTextEntry
-            placeholderTextColor="#999"
-          />
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Password"
+              value={formData.password}
+              onChangeText={text => handleInputChange('password', text)}
+              secureTextEntry={!showPassword}
+              placeholderTextColor="#999"
+            />
+            <TouchableOpacity onPress={() => setShowPassword(prev => !prev)}>
+              <Icon
+                name={showPassword ? 'eye' : 'eye-slash'}
+                size={20}
+                color="#888"
+                style={styles.eyeIcon}
+              />
+            </TouchableOpacity>
+          </View>
           {errors.password && (
             <Text style={styles.errorText}>{errors.password}</Text>
           )}
@@ -151,8 +168,15 @@ export default function SignIn() {
             <Text style={styles.buttonText}>Sign In</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.googleButton} onPress={handleGoogleSignIn}>
-            <Icon name="google" size={20} color="#DB4437" style={styles.googleIcon} />
+          <TouchableOpacity
+            style={styles.googleButton}
+            onPress={handleGoogleSignIn}>
+            <Icon
+              name="google"
+              size={20}
+              color="#DB4437"
+              style={styles.googleIcon}
+            />
             <Text style={styles.googleButtonText}>Sign In with Google</Text>
           </TouchableOpacity>
         </ScrollView>
@@ -192,6 +216,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     fontSize: 16,
     color: '#222',
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    backgroundColor: '#fff',
+    marginBottom: 8,
+  },
+  passwordInput: {
+    flex: 1,
+    height: 55,
+    fontSize: 16,
+    color: '#222',
+  },
+  eyeIcon: {
+    paddingHorizontal: 8,
   },
   button: {
     backgroundColor: '#0a84ff',

@@ -34,6 +34,7 @@ export default function Signup() {
     password: '',
   });
   const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
 
   //googlesignin configure
@@ -101,30 +102,21 @@ export default function Signup() {
 
   //google signup
   const handleGoogleSignIn = async () => {
-  try {
-    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-
-    
-    await GoogleSignin.signOut(); //forces email picker
-
-    
-    const signInResult = await GoogleSignin.signIn();
-
-    const idToken = signInResult.data?.idToken || signInResult.idToken;
-    if (!idToken) throw new Error('No ID token found');
-
-    const googleCredential = GoogleAuthProvider.credential(idToken);
-    const authResult = await signInWithCredential(getAuth(), googleCredential);
-
-    console.log(authResult.user.providerData);
-
-    navigation.navigate('Home');
-  } catch (error) {
-    console.error('Google Sign-In error:', error);
-    Alert.alert('Sign-In Error', 'Failed to sign in with Google. Please try again.');
-  }
-};
-
+    try {
+      await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+      await GoogleSignin.signOut(); //forces email picker
+      const signInResult = await GoogleSignin.signIn();
+      const idToken = signInResult.data?.idToken || signInResult.idToken;
+      if (!idToken) throw new Error('No ID token found');
+      const googleCredential = GoogleAuthProvider.credential(idToken);
+      const authResult = await signInWithCredential(getAuth(), googleCredential);
+      console.log(authResult.user.providerData);
+      navigation.navigate('Home');
+    } catch (error) {
+      console.error('Google Sign-In error:', error);
+      Alert.alert('Sign-In Error', 'Failed to sign in with Google. Please try again.');
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -156,14 +148,24 @@ export default function Signup() {
           />
           {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            value={formData.password}
-            onChangeText={text => handleInputChange('password', text)}
-            secureTextEntry
-            placeholderTextColor="#999"
-          />
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Password"
+              value={formData.password}
+              onChangeText={text => handleInputChange('password', text)}
+              secureTextEntry={!showPassword}
+              placeholderTextColor="#999"
+            />
+            <TouchableOpacity onPress={() => setShowPassword(prev => !prev)}>
+              <Icon
+                name={showPassword ? 'eye' : 'eye-slash'}
+                size={20}
+                color="#888"
+                style={styles.eyeIcon}
+              />
+            </TouchableOpacity>
+          </View>
           {errors.password && (
             <Text style={styles.errorText}>{errors.password}</Text>
           )}
@@ -213,6 +215,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#222',
   },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    backgroundColor: '#fff',
+    marginBottom: 8,
+  },
+  passwordInput: {
+    flex: 1,
+    height: 55,
+    fontSize: 16,
+    color: '#222',
+  },
+  eyeIcon: {
+    paddingHorizontal: 8,
+  },
   button: {
     backgroundColor: '#0a84ff',
     paddingVertical: 16,
@@ -222,7 +243,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     shadowColor: '#0a84ff',
     shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: {width: 0, height: 4},
     shadowRadius: 6,
     elevation: 5,
   },
@@ -243,7 +264,7 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     shadowColor: '#000',
     shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowRadius: 4,
     elevation: 2,
   },
@@ -262,4 +283,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
 });
-
