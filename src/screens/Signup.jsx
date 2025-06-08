@@ -12,12 +12,14 @@ import {
   Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Signup() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const navigation = useNavigation();
 
   const validate = () => {
     const newErrors = {};
@@ -64,6 +66,7 @@ export default function Signup() {
       setName('');
       setEmail('');
       setPassword('');
+      navigation.navigate('Home')
     }
   }
 };
