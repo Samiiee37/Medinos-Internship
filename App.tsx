@@ -9,7 +9,6 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 //Navigator
 
 
-// Functional component (since you're using a function, not a class)
 export default function App() {
   
   return (
