@@ -1,13 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { getAuth } from '@react-native-firebase/auth';
 
 const HomeHeader = () => {
   const [user, setUser] = useState(null);
+  const [googleUser, setGoogleUser] = useState([]);
   const navigation = useNavigation();
 
   useEffect(() => {
+    const checkGoogleUser = async () => {
+      const auth = getAuth();
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const providers = currentUser.providerData;
+        console.log('Provider Data:', providers);
+        setGoogleUser(providers);
+      } else {
+        console.log('No user signed in via Google');
+      }
+    };
+
     const checkAuthStatus = async () => {
       try {
         const userData = await AsyncStorage.getItem('user');
@@ -21,10 +35,11 @@ const HomeHeader = () => {
     };
 
     checkAuthStatus();
+    checkGoogleUser();
   }, []);
 
   const handleProfilePress = () => {
-    if (user?.signedIn) {
+    if (googleUser.length > 0 || user?.signedIn) {
       navigation.navigate('User');
     } else {
       navigation.navigate('Signin');
@@ -32,36 +47,52 @@ const HomeHeader = () => {
   };
 
   const getInitial = () => {
-    if (user?.signedIn && user?.name) {
+    if (googleUser.length > 0 && googleUser[0].displayName) {
+      return googleUser[0].displayName.charAt(0).toUpperCase();
+    } else if (user?.signedIn && user?.name) {
       return user.name.charAt(0).toUpperCase();
     }
     return '?';
   };
 
+  const getGreeting = () => {
+    if (googleUser.length > 0 && googleUser[0].displayName) {
+      return `Hi, ${googleUser[0].displayName.split(' ')[0]}`;
+    } else if (user?.signedIn && user?.name) {
+      return `Hi, ${user.name.split(' ')[0]}`;
+    } else {
+      return 'Please SignIn';
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        {user?.signedIn ? (
-          <Text style={styles.welcomeText}>Hi, {user.name.split(' ')[0]}</Text>
-        ) : (
-          <Text style={styles.signInText}>Please SignIn</Text>
-        )}
+        <Text style={googleUser.length > 0 || user?.signedIn ? styles.welcomeText : styles.signInText}>
+          {getGreeting()}
+        </Text>
 
         <TouchableOpacity
           style={[
             styles.profileButton,
-            user?.signedIn ? styles.signedInButton : styles.signedOutButton,
+            user?.signedIn || googleUser.length > 0
+              ? styles.signedInButton
+              : styles.signedOutButton,
           ]}
           onPress={handleProfilePress}
         >
-          <Text
-            style={[
-              styles.profileInitial,
-              !user?.signedIn && { color: '#333' },
-            ]}
-          >
-            {getInitial()}
-          </Text>
+          {googleUser.length > 0 && googleUser[0].photoURL ? (
+            <Image
+              source={{ uri: googleUser[0].photoURL }}
+              style={styles.profileImage}
+            />
+          ) : (
+            <Text
+              style={[styles.profileInitial, !user?.signedIn && { color: '#333' }]}
+            >
+              {getInitial()}
+            </Text>
+          )}
         </TouchableOpacity>
       </View>
     </View>
@@ -114,6 +145,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 3,
+    overflow: 'hidden',
   },
   signedInButton: {
     backgroundColor: '#3498db',
@@ -125,6 +157,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: '#fff',
+  },
+  profileImage: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
   },
 });
 
