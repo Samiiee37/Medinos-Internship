@@ -1,17 +1,18 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import DetailHeader from '../components/DetailHeader';
 
 const Detail = ({ route }) => {
   const { user } = route.params;
-  const screenWidth = Dimensions.get('window').width;
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <DetailHeader />
       <View style={styles.imageContainer}>
         <Image 
           source={{ uri: user.ImageUrl }} 
-          style={[styles.detailImage, { width: screenWidth }]}
-          resizeMode="contain"
+          style={styles.profileImage}
+          resizeMode="cover"
         />
       </View>
       <View style={styles.detailContent}>
@@ -30,23 +31,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   imageContainer: {
+    alignItems: 'center',
+    paddingVertical: 24,
     backgroundColor: '#f5f5f5',
   },
-  detailImage: {
-    height: undefined,
-    aspectRatio: 1, // Assuming square images, adjust if needed
+  profileImage: {
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    borderWidth: 2,
+    borderColor: '#ccc',
   },
   detailContent: {
-    padding: 20,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
   },
   detailName: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 15,
+    marginBottom: 20,
+    textAlign: 'center',
   },
   detailText: {
     fontSize: 18,
-    marginBottom: 10,
+    marginBottom: 12,
     color: '#333',
   },
 });
