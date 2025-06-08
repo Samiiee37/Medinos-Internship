@@ -1,20 +1,19 @@
-// Import gesture handler at the top (correct syntax for React Native)
-import 'react-native-gesture-handler';
-
-// Imports
+import 'react-native-gesture-handler'; 
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+//safe-area-view
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-
-//Navigator
-
+//navigator
+import { NavigationContainer } from '@react-navigation/native';
+import StackNavigator from './src/navigator/Navigator'; 
 
 export default function App() {
-  
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <Text>App</Text>
+        <NavigationContainer>
+          <StackNavigator /> 
+        </NavigationContainer>
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -22,8 +21,6 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 1
   },
 });
