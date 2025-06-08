@@ -20,6 +20,7 @@ import {
   getAuth,
   signInWithCredential,
 } from '@react-native-firebase/auth';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 //web_client_id
 const WEB_CLIENT_ID =
@@ -103,10 +104,10 @@ export default function Signup() {
   try {
     await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
 
-    // Sign out first to clear cached Google account selection
-    await GoogleSignin.signOut();
+    
+    await GoogleSignin.signOut(); //forces email picker
 
-    // Now sign in, this will force account picker
+    
     const signInResult = await GoogleSignin.signIn();
 
     const idToken = signInResult.data?.idToken || signInResult.idToken;
@@ -171,7 +172,10 @@ export default function Signup() {
             <Text style={styles.buttonText}>Sign Up</Text>
           </TouchableOpacity>
 
-          <Button title="Google Sign-Up" onPress={handleGoogleSignIn} />
+          <TouchableOpacity style={styles.googleButton} onPress={handleGoogleSignIn}>
+            <Icon name="google" size={20} color="#DB4437" style={styles.googleIcon} />
+            <Text style={styles.googleButtonText}>Sign Up with Google</Text>
+          </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -215,9 +219,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     marginTop: 12,
+    marginBottom: 8,
     shadowColor: '#0a84ff',
     shadowOpacity: 0.2,
-    shadowOffset: {width: 0, height: 4},
+    shadowOffset: { width: 0, height: 4 },
     shadowRadius: 6,
     elevation: 5,
   },
@@ -226,6 +231,30 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 17,
   },
+  googleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    paddingVertical: 14,
+    borderRadius: 12,
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  googleIcon: {
+    marginRight: 12,
+  },
+  googleButtonText: {
+    color: '#333',
+    fontSize: 16,
+    fontWeight: '500',
+  },
   errorText: {
     color: '#e53935',
     fontSize: 13,
@@ -233,3 +262,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
 });
+
