@@ -5,14 +5,16 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
-  ScrollView,
+  Image,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { getAuth, signOut } from '@react-native-firebase/auth';
 import UserHeader from '../components/UserHeader';
 
 export default function User() {
   const [user, setUser] = useState(null);
+  const [googleUser, setGoogleUser] = useState([]);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -27,26 +29,56 @@ export default function User() {
       }
     };
 
+    const fetchGoogleData = () => {
+      const auth = getAuth();
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        setGoogleUser(currentUser.providerData);
+      }
+    };
+
     fetchUser();
+    fetchGoogleData();
   }, []);
 
   const handleLogout = async () => {
-    try {
-      if (!user) return;
+  try {
+    const auth = getAuth();
+    if (auth.currentUser) {
+      await signOut(auth); 
+    }
+
+    if (user) {
       const updatedUser = { ...user, signedIn: false };
       await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
-      navigation.navigate('Home');
-    } catch (e) {
-      console.error('Logout error:', e);
-      Alert.alert('Error', 'Failed to logout. Try again.');
     }
-  };
+
+    navigation.navigate('Home');
+  } catch (e) {
+    console.error('Logout error:', e);
+    Alert.alert('Error', 'Failed to logout. Try again.');
+  }
+};
+
 
   const getInitial = () => {
-    return user?.name?.charAt(0).toUpperCase() || '?';
+    const name = googleUser[0]?.displayName || user?.name;
+    return name?.charAt(0).toUpperCase() || '?';
   };
 
-  if (!user) {
+  const getPhotoURL = () => {
+    return googleUser[0]?.photoURL || null;
+  };
+
+  const getDisplayName = () => {
+    return googleUser[0]?.displayName || user?.name || 'Unknown User';
+  };
+
+  const getEmail = () => {
+    return googleUser[0]?.email || user?.email || 'Unknown Email';
+  };
+
+  if (!user && googleUser.length === 0) {
     return (
       <View style={styles.centered}>
         <Text>Loading user...</Text>
@@ -58,11 +90,15 @@ export default function User() {
     <View style={styles.screen}>
       <UserHeader />
       <View style={styles.content}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarText}>{getInitial()}</Text>
-        </View>
-        <Text style={styles.name}>{user.name}</Text>
-        <Text style={styles.email}>{user.email}</Text>
+        {getPhotoURL() ? (
+          <Image source={{ uri: getPhotoURL() }} style={styles.avatarImage} />
+        ) : (
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>{getInitial()}</Text>
+          </View>
+        )}
+        <Text style={styles.name}>{getDisplayName()}</Text>
+        <Text style={styles.email}>{getEmail()}</Text>
 
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutText}>Logout</Text>
@@ -90,6 +126,12 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 20,
+  },
+  avatarImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
     marginBottom: 20,
   },
   avatarText: {

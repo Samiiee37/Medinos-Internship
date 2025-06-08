@@ -113,7 +113,7 @@ export default function Signup() {
         googleCredential,
       );
 
-      //console.log(authResult.user.providerData);
+      console.log(authResult.user.providerData);
 
       navigation.navigate('Home');
     } catch (error) {

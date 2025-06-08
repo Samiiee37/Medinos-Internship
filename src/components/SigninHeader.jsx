@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons'; 
 
-const UserHeader = () => {
+const SigninHeader = () => {
   const navigation = useNavigation();
 
   return (
@@ -15,7 +15,6 @@ const UserHeader = () => {
         <Icon name="arrow-back" size={24} color="#333" />
       </TouchableOpacity>
 
-      <Text style={styles.headerTitle}>Your Detail</Text>
 
       {/* Empty view to center the title by balancing the layout */}
       <View style={styles.placeholder} />
@@ -47,4 +46,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserHeader;
+export default SigninHeader;

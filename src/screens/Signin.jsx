@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import SigninHeader from '../components/SigninHeader';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -44,7 +45,6 @@ export default function SignIn() {
       if (parsedUser.email === email && parsedUser.password === password) {
         const updatedUser = { ...parsedUser, signedIn: true };
         await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
-        //Alert.alert('Success', 'You have signed in successfully!');
         navigation.navigate('Home');
       } else {
         Alert.alert('Error', 'Invalid email or password');
@@ -57,6 +57,7 @@ export default function SignIn() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <SigninHeader />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}>
@@ -109,6 +110,7 @@ const styles = StyleSheet.create({
   innerContainer: {
     flexGrow: 1,
     padding: 24,
+    paddingTop: 0, // no gap needed for header here
     justifyContent: 'center',
   },
   title: {
