@@ -27,7 +27,7 @@ const HomeHeader = () => {
     if (user?.signedIn) {
       navigation.navigate('User');
     } else {
-      navigation.navigate('SignIn');
+      navigation.navigate('Signin');
     }
   };
 
