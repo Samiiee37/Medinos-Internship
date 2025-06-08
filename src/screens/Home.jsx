@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import HomeHeader from '../components/HomeHeader';
 
 const HomeScreen = () => {
   const [users, setUsers] = useState([]);
@@ -57,6 +58,7 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
+      <HomeHeader />
       <FlatList
         data={users}
         renderItem={renderItem}
