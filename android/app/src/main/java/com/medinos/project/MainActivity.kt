@@ -1,4 +1,4 @@
-package com.project
+package com.medinos.project
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

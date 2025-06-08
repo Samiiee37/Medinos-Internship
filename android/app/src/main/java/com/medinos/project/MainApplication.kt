@@ -1,4 +1,4 @@
-package com.project
+package com.medinos.project
 
 import android.app.Application
 import com.facebook.react.PackageList

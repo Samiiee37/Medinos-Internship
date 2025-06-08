@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "902255017381",
+    "project_id": "medinos-internship-4feec",
+    "storage_bucket": "medinos-internship-4feec.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:902255017381:android:96baad6a7ab6a5bfd2bc4c",
+        "android_client_info": {
+          "package_name": "com.medinos.project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "902255017381-869ba84vki6faal7mntfghvoihb4av5u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.medinos.project",
+            "certificate_hash": "fd425fc1c033bb608429aef3509abc1ac83bc6e8"
+          }
+        },
+        {
+          "client_id": "902255017381-dom9cksut36riboj7e667qguj71kc28g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1OSXdaev6OtdiACfRxsoc686jASUIICg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "902255017381-dom9cksut36riboj7e667qguj71kc28g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
