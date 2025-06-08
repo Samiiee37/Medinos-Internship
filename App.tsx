@@ -6,12 +6,16 @@ import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
+//Navigator
+
+
 // Functional component (since you're using a function, not a class)
 export default function App() {
+  
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <Text>Project</Text>
+        <Text>App</Text>
       </SafeAreaView>
     </SafeAreaProvider>
   );
